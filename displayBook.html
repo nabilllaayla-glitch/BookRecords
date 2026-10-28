@@ -27,11 +27,11 @@
                 return response.json();
             })
             .then(data => {
-                book = data.books;
+                books = data.books;
 
                 const select = document.getElementById("bookSelect");
 
-                book.forEach((book, index) => {
+                books.forEach((book, index) => {
                     const option = document.createElement("option");
                     option.value = index;
                     option.textContent = book.title;
@@ -53,7 +53,7 @@
                     return;
                 }
 
-                const book = book[this.value];
+                const book = books[this.value];
 
                 if (!book) {
                     details.textContent = "Book not found.";
