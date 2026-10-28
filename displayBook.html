@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book Details Viewer</title>
+</head>
+<body>
+
+    <h1>Book Details Viewer</h1>
+
+    <label for="bookSelect">Select a Book Title:</label>
+
+    <select id="bookSelect">
+        <option value="">-- Choose a Book --</option>
+    </select>
+
+    <div id="bookDetails"></div>
+
+    <script>
+        const jsonURL = "https://raw.githubusercontent.com/nabilllaayla-glitch/BookRecords/refs/heads/main/book.json";
+
+        let books = [];
+
+        fetch(jsonURL)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Unable to load JSON");
+                }
+                return response.json();
+            })
+            .then(data => {
+                books = data.Book || data.books;
+
+                const select = document.getElementById("bookSelect");
+
+                books.forEach((book, index) => {
+                    const option = document.createElement("option");
+
+                    option.value = index;
+                    option.textContent = book.title || book.name;
+
+                    select.appendChild(option);
+                });
+            })
+            .catch(error => {
+                document.getElementById("bookDetails").textContent =
+                    "Failed to load book records. Please check the GitHub URL.";
+
+                console.error(error);
+            });
+
+        document.getElementById("bookSelect")
+            .addEventListener("change", function () {
+
+                const details = document.getElementById("bookDetails");
+
+                if (this.value === "") {
+                    details.innerHTML = "";
+                    return;
+                }
+
+                const book = books[this.value];
+
+                if (!book) {
+                    details.textContent = "Book not found.";
+                    return;
+                }
+
+                const title = book.title || book.name;
+                const year = book.publicationYear ??
+                             book["publication Year"];
+
+                details.innerHTML = `
+                    <h2>${title}</h2>
+                    <p><b>Author:</b> ${book.author}</p>
+                    <p><b>Publication Year:</b> ${year}</p>
+                    <p><b>Genres:</b> ${book.genres.join(", ")}</p>
+                `;
+            });
+    </script>
+
+</body>
+</html>
